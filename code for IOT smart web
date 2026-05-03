@@ -1,1 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IoT Smart city </title>
 
+<script src="https://cdn.jsdelivr.net/npm/echarts@5"></script>
+
+<style>
+body {
+  margin: 0;
+  background: #0f1722;
+  font-family: "Segoe UI", sans-serif;
+  color: #e6edf3;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  font-size: 32px;
+  padding: 20px;
+  font-weight: bold;
+}
+
+/* LAYOUT */
+.container {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+.left, .right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.top-row, .bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* CARD BASE */
+.card {
+  background: #1a2233;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.6);
+  position: relative;
+  transition: all 0.3s ease;
+  will-change: transform;
+  overflow: hidden;
+}
+
+/* MINI BOX */
+.mini {
+  background: #0f1722;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  height: 80px;
+  position: relative;
+  transition: all 0.3s ease;
+  will-change: transform;
+  overflow: hidden;
+}
+
+/* HOVER ELEVATION */
+.card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow:
+    0 15px 35px rgba(0,0,0,0.9),
+    0 0 20px rgba(0,255,200,0.2);
+}
+
+.mini:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow:
+    0 10px 20px rgba(0,0,0,0.8),
+    0 0 10px rgba(0,255,200,0.2);
+}
+
+/* GLOW BORDER */
+.card::before, .mini::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(120deg, transparent, #00ffc8, transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.card:hover::before, .mini:hover::before {
+  opacity: 1;
+}
+
+/* TITLES */
+.title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* VALUE */
+.value {
+  font-size: 22px;
+  margin-top: 6px;
+  color: #00ff9f;
+}
+
+/* ALERT */
+.alert-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.alert {
+  color: #ff9f43;
+  font-size: 20px;
+}
+
+/* GRIDS */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* CHARTS */
+.chart { height: 180px; }
+.gauge { height: 220px; }
+.line { height: 120px; }
+
+/* CCTV */
+.cctv {
+  height: 140px;
+  border: 1px dashed #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">IoT Smart City</div>
+
+<div class="container">
+
+  <div class="left">
+
+    <div class="top-row">
+
+      <div class="card">
+        <div class="title">Online Devices</div>
+        <div id="pie" class="chart"></div>
+      </div>
+
+      <div class="card">
+        <div class="title">Alert Info</div>
+        <div class="alert-grid">
+          <div>Air Quality<br><span class="alert">26.5</span></div>
+          <div>Water Quality<br><span class="alert">26.5</span></div>
+          <div>Soil Moisture<br><span class="alert">26.5</span></div>
+          <div>Wind Speed<br><span class="alert">26.5</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bottom-row">
+
+      <div class="card">
+        <div class="title">Housing</div>
+        <div class="grid-2">
+          <div class="mini">Temp<div class="value">26.5°C</div></div>
+          <div class="mini">Humidity<div class="value">26.5%</div></div>
+          <div class="mini">TVOC<div class="value">26.5</div></div>
+          <div class="mini">AQI<div class="value">26.5</div></div>
+          <div class="mini">CO2<div class="value">400ppm</div></div>
+          <div class="mini">Light<div class="value">202 lx</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Farm</div>
+        <div class="mini">Soil Temp<div class="value">24.6°C</div></div>
+        <div id="soil" class="line"></div>
+        <div class="cctv">CCTV</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="right">
+
+    <div class="card">
+      <div class="title">Weather Station</div>
+      <div id="gauge" class="gauge"></div>
+
+      <div class="grid-2">
+        <div class="mini">Temp<div class="value">27.2°C</div></div>
+        <div class="mini">Humidity<div class="value">30%</div></div>
+        <div class="mini">Wind Dir<div class="value">→</div></div>
+      </div>
+
+      <div id="wind" class="line"></div>
+    </div>
+
+    <div class="card">
+      <div class="title">Lake</div>
+      <div class="grid-2">
+        <div class="mini">pH<div class="value">26.5</div></div>
+        <div class="mini">TDS<div class="value">26.5 mg/L</div></div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+// PIE
+echarts.init(document.getElementById('pie')).setOption({
+  series: [{
+    type: 'pie',
+    radius: ['40%', '70%'],
+    label: {color:'#fff'},
+    data: [
+      {value:25, name:'Housing'},
+      {value:25, name:'Farm'},
+      {value:25, name:'Weather'},
+      {value:25, name:'Lake'}
+    ]
+  }]
+});
+
+// GAUGE
+echarts.init(document.getElementById('gauge')).setOption({
+  series: [{
+    type: 'gauge',
+    startAngle: 180,
+    endAngle: 0,
+    min: 0,
+    max: 1500,
+    progress: {show: true},
+    axisLine: {lineStyle:{width:15}},
+    pointer: {show:false},
+    detail: {formatter:'{value} KPa', color:'#fff'},
+    data: [{value:1025}]
+  }]
+});
+
+// LINE CHART
+function createLine(id){
+  echarts.init(document.getElementById(id)).setOption({
+    xAxis:{type:'category', data:['1','2','3','4','5']},
+    yAxis:{type:'value'},
+    series:[{
+      data:[0.2,0.4,0.3,0.5,0.4],
+      type:'line',
+      smooth:true
+    }]
+  });
+}
+
+createLine('wind');
+createLine('soil');
+
+</script>
+
+</body>
+</html>
